@@ -23,8 +23,19 @@ module.exports = {
         //Very Light Gray (Light Mode Background)
         veryLightGray: "hsl(0, 0%, 98%)",
       },
+      fontFamily: {
+        sans: ["var(--font-nunito)"],
+      },
+    },
+    container: {
+      center: true,
+      padding: {
+        DEFAULT: "15px",
+        sm: "20px",
+      },
     },
   },
+
   plugins: [],
   darkMode: "class",
 };
