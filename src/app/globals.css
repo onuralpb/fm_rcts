@@ -2,12 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  color: @apply bg-veryDarkBlue;
-  background: @apply bg-veryLightGray;
-}
+@layer base {
+  html {
+    &.dark {
+      body {
+        @apply text-white bg-veryDarkBlue;
+      }
+    }
+  }
 
-@media (prefers-color-scheme: dark) {
-  color: @apply bg-white;
-  background: @apply bg-veryDarkBlue;
+  body {
+    @apply text-veryDarkBlue bg-veryLightGray;
+    margin-bottom: 40px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body {
+      /* @apply text-white bg-veryDarkBlue; */
+    }
+  }
 }

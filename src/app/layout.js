@@ -1,5 +1,7 @@
-import "./globals.css";
+import { DataProvider } from "./context/getData";
 import { Nunito_Sans } from "next/font/google";
+import "./globals.css";
+
 import Header from "./header";
 
 const nunito_sans = Nunito_Sans({
@@ -18,13 +20,15 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={nunito_sans.variable}>
-      <body>
-        <main>
-          <Header />
-          <div className="container">{children}</div>
-        </main>
-      </body>
-    </html>
+    <DataProvider>
+      <html lang="en" className={nunito_sans.variable}>
+        <body>
+          <main>
+            <Header />
+            <div className="container">{children}</div>
+          </main>
+        </body>
+      </html>
+    </DataProvider>
   );
 }
