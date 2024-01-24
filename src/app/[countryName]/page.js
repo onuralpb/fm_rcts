@@ -12,16 +12,23 @@ export default function CountryDetail({ params }) {
   const [country, setCountry] = useState();
   const router = useRouter();
 
-  async function getCountryData() {
-    const findIt = await countries.filter(
-      (item) => item.cca2 == params.countryName
-    );
-    setCountry(findIt);
-  }
+  console.log("params: ", params);
+  console.log("country: ", country);
+
+  const getCountryData = async () => {
+    console.log("countries: ", countries);
+    if (countries) {
+      const findIt = await countries.filter(
+        (item) => item.cca2 == params.countryName
+      );
+      setCountry(findIt);
+    }
+  };
 
   useEffect(() => {
-    if (countries == null) {
+    if (countries == null && country == undefined) {
       fetchCountries();
+      getCountryData();
     } else {
       getCountryData();
     }
@@ -36,8 +43,8 @@ export default function CountryDetail({ params }) {
         <FaArrowLeftLong />
         Back
       </button>
-      {country?.map((country, index) => (
-        <div className="grid grid-cols-2 gap-24" key={index}>
+      {country?.map((country) => (
+        <div className="grid grid-cols-2 gap-24" key={country.cca2}>
           <div>
             <Image
               src={country.flags.svg}
@@ -48,15 +55,15 @@ export default function CountryDetail({ params }) {
             />
           </div>
           <div className="grid content-around">
-            <p className="font-bold text-3xl mb-5 leading-7 col-span-2">
+            <p className="col-span-2 font-bold text-3xl mb-5 leading-7">
               {country.name.common}
             </p>
-            <div className="grid grid-cols-2 gap-5">
+            <div className="col-span-2 grid grid-cols-2 gap-5">
               <div className="grid gap-1">
                 <div className="font-bold">
                   Native Name:
                   <span className="font-normal ml-2">
-                    {country.name.nativeName.cat}
+                    {Object.values(country.name.nativeName)[0].official}
                   </span>
                 </div>
                 <div className="font-bold">
@@ -86,20 +93,25 @@ export default function CountryDetail({ params }) {
                 <div className="font-bold">
                   Currencies:
                   <span className="font-normal ml-2">
-                    {country.currencies.EUR}
+                    {Object.values(country.currencies)[0].name}
                   </span>
                 </div>
                 <div className="font-bold">
                   Languages:
-                  <span className="font-normal ml-2">
-                    {country.languages.cat}
+                  <span className="font-normal ml-2 noLast">
+                    {Object.values(country.languages).map((lang) => (
+                      <>
+                        <span>{lang}</span>
+                        <span>{", "}</span>
+                      </>
+                    ))}
                   </span>
                 </div>
               </div>
             </div>
             <div className="font-bold col-span-2">
               Border Countries:
-              {country.borders.map((item) => (
+              {country.borders?.map((item) => (
                 <span className="ml-4 inline-flex gap-3 font-normal bg-white py-1 px-6 shadow-3xl items-center rounded-md  dark:bg-darkBlue dark:text-white ">
                   {item}
                 </span>

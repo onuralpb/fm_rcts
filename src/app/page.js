@@ -12,11 +12,8 @@ export default function Home() {
   const [countries, fetchCountries] = useData();
   const [selectedRegion, setSelectedRegion] = useState("All");
   const [regionCountries, setRegionCountries] = useState();
-  console.log("countries: ", countries);
-  console.log("selectedRegion: ", selectedRegion);
-  console.log("regionCountries: ", regionCountries);
 
-  async function getRegionData(event) {
+  const getRegionData = async (event) => {
     setSelectedRegion(event.target.value);
     if (event.target.value == "All") {
       fetchCountries();
@@ -24,10 +21,9 @@ export default function Home() {
       const findIt = await countries.filter(
         (item) => item.region == event.target.value
       );
-      console.log("findIt: ", findIt);
       setRegionCountries(findIt);
     }
-  }
+  };
 
   useEffect(() => {
     fetchCountries();
@@ -67,10 +63,10 @@ export default function Home() {
       </div>
       <div className="grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-10 items-stretch">
         {(selectedRegion == "All" ? countries : regionCountries)?.map(
-          (country, index) => (
+          (country) => (
             <div
               className="shadow-4xl dark:shadow-5xl rounded-lg dark:bg-darkBlue flex flex-col justify-between"
-              key={index}
+              key={country.cca2}
             >
               <Link href={`/${country.cca2}`}>
                 <Image
