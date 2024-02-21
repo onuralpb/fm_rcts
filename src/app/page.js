@@ -1,33 +1,73 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useData } from "./context/getData";
-import Image from "next/image";
-import Link from "next/link";
-import numeral from "numeral";
 
 import { IoMdSearch } from "react-icons/io";
 import { MdKeyboardArrowDown } from "react-icons/md";
+import CountryList from "./countryList";
 
 export default function Home() {
+  const searchInputRef = useRef(null);
   const [countries, fetchCountries] = useData();
+  console.log("countries: ", countries);
+  const [filteredCountries, setFilteredCountries] = useState(countries);
+  console.log("filteredCountries: ", filteredCountries);
   const [selectedRegion, setSelectedRegion] = useState("All");
-  const [regionCountries, setRegionCountries] = useState();
+  console.log("selectedRegion: ", selectedRegion);
 
   const getRegionData = async (event) => {
-    setSelectedRegion(event.target.value);
-    if (event.target.value == "All") {
-      fetchCountries();
+    searchInputRef.current.value = "";
+    const region = event.target.value;
+    setSelectedRegion(region);
+    if (region == "All") {
+      setFilteredCountries(countries);
     } else {
-      const findIt = await countries.filter(
-        (item) => item.region == event.target.value
-      );
-      setRegionCountries(findIt);
+      const findIt = await countries.filter((item) => item.region == region);
+      setFilteredCountries(findIt);
     }
+  };
+
+  const getKeywordData = async (event) => {
+    const keyword = event.target.value;
+    console.log("keyword: ", keyword);
+
+    // Eğer arama kutusu boşsa ve bir bölge seçiliyse, bu bölgeye göre filtreleme yap
+    if (keyword === "" && selectedRegion !== "All") {
+      const regionFiltered = countries.filter(
+        (item) => item.region === selectedRegion
+      );
+      setFilteredCountries(regionFiltered);
+      return;
+    }
+
+    // Eğer arama kutusu boşsa ve "All" seçiliyse, tüm ülkeleri göster
+    if (keyword === "") {
+      setFilteredCountries(countries);
+      return;
+    }
+
+    // Aksi takdirde, arama ve seçilen bölgeye göre filtreleme yap
+    const baseCountries =
+      selectedRegion === "All"
+        ? countries
+        : countries.filter((item) => item.region === selectedRegion);
+    const findIt = await baseCountries.filter((item) =>
+      item.name.common.toLowerCase().includes(keyword.toLowerCase())
+    );
+    setFilteredCountries(findIt);
   };
 
   useEffect(() => {
     fetchCountries();
-  }, [selectedRegion]);
+  }, []);
+
+  useEffect(() => {
+    setFilteredCountries(countries);
+  }, [countries]);
+
+  useEffect(() => {
+    getRegionData({ target: { value: selectedRegion } });
+  }, [countries, selectedRegion]);
 
   return (
     <>
@@ -38,15 +78,16 @@ export default function Home() {
             className="absolute left-3 top-4 text-darkGray dark:text-white"
           />
           <input
+            ref={searchInputRef}
             type="text"
             className="shadow-3xl w-[520px] text-veryDarkBlue p-4 pl-12 rounded-md dark:bg-darkBlue dark:text-white"
             placeholder="Search for a country.."
+            onChange={getKeywordData}
           />
         </div>
         <div className="relative">
           <MdKeyboardArrowDown className="absolute right-3 top-5" />
           <select
-            value={selectedRegion}
             onChange={getRegionData}
             className="shadow-3xl text-veryDarkBlue py-4 pl-5 pr-14 rounded-md appearance-none dark:bg-darkBlue dark:text-white"
           >
@@ -62,44 +103,9 @@ export default function Home() {
         </div>
       </div>
       <div className="grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-10 items-stretch">
-        {(selectedRegion == "All" ? countries : regionCountries)?.map(
-          (country) => (
-            <div
-              className="shadow-4xl dark:shadow-5xl rounded-lg dark:bg-darkBlue flex flex-col justify-between"
-              key={country.cca2}
-            >
-              <Link href={`/${country.cca2}`}>
-                <Image
-                  src={country.flags.svg}
-                  width={0}
-                  height={0}
-                  alt={country.name.common}
-                  className="rounded-[8px_8px_0_0] w-full h-auto object-cover object-center aspect-[16/9] border-b border-solid border-gray-300 dark:border-none"
-                />
-              </Link>
-
-              <div className="p-6">
-                <p className="font-bold text-2xl mb-5 leading-7">
-                  {country.name.common}
-                </p>
-                <div className="font-bold">
-                  Population:
-                  <span className="font-normal ml-2">
-                    {numeral(country.population).format("0,0")}
-                  </span>
-                </div>
-                <div className="font-bold">
-                  Region:
-                  <span className="font-normal ml-2">{country.region}</span>
-                </div>
-                <div className="font-bold">
-                  Capital:
-                  <span className="font-normal ml-2">{country.capital}</span>
-                </div>
-              </div>
-            </div>
-          )
-        )}
+        {filteredCountries?.map((country) => (
+          <CountryList country={country} key={country.cca2} />
+        ))}
       </div>
     </>
   );

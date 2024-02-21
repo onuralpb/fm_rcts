@@ -112,7 +112,7 @@ export default function CountryDetail({ params }) {
             <div className="font-bold col-span-2">
               Border Countries:
               {country.borders?.map((item) => (
-                <span className="ml-4 inline-flex gap-3 font-normal bg-white py-1 px-6 shadow-3xl items-center rounded-md  dark:bg-darkBlue dark:text-white ">
+                <span className="ml-4 inline-flex gap-3 font-normal bg-white py-1 px-6 shadow-3xl items-center rounded-md  dark:bg-darkBlue dark:text-white mb-3">
                   {item}
                 </span>
               ))}
