@@ -52,8 +52,8 @@ export default function Home() {
 
   return (
     <>
-      <div className="flex justify-between items-center mb-16">
-        <div className="relative">
+      <div className="flex md:justify-between md:flex-row flex-col  md:gap-y-0 gap-y-10 items-center md:mb-16 mb-10 gap-x-5">
+        <div className="relative md:w-auto w-full">
           <IoMdSearch
             size={24}
             className="absolute left-3 top-4 text-darkGray dark:text-white"
@@ -61,12 +61,12 @@ export default function Home() {
           <input
             ref={searchInputRef}
             type="text"
-            className="shadow-3xl w-[520px] text-veryDarkBlue p-4 pl-12 rounded-md dark:bg-darkBlue dark:text-white"
+            className="shadow-3xl md:w-[520px] text-veryDarkBlue p-4 pl-12 rounded-md dark:bg-darkBlue dark:text-white w-full"
             placeholder="Search for a country.."
             onChange={getKeywordData}
           />
         </div>
-        <div className="relative">
+        <div className="relative self-start">
           <MdKeyboardArrowDown className="absolute right-3 top-5" />
           <select
             onChange={getRegionData}
