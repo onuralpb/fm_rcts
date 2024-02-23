@@ -12,17 +12,20 @@ export default function CountryDetail({ params }) {
   const [country, setCountry] = useState();
   const router = useRouter();
 
-  console.log("params: ", params);
-  console.log("country: ", country);
-
   const getCountryData = async () => {
-    console.log("countries: ", countries);
     if (countries) {
       const findIt = await countries.filter(
         (item) => item.cca2 == params.countryName
       );
       setCountry(findIt);
     }
+  };
+
+  const convertFullnameBorderCountries = (shortCountryName) => {
+    const borderCountries = countries.find(
+      (country) => country.cca3 === shortCountryName
+    );
+    return borderCountries.name.common;
   };
 
   useEffect(() => {
@@ -109,13 +112,15 @@ export default function CountryDetail({ params }) {
                 </div>
               </div>
             </div>
-            <div className="font-bold col-span-2">
-              Border Countries:
-              {country.borders?.map((item) => (
-                <span className="ml-4 inline-flex gap-3 font-normal bg-white py-1 px-6 shadow-3xl items-center rounded-md  dark:bg-darkBlue dark:text-white mb-3">
-                  {item}
-                </span>
-              ))}
+            <div className="font-bold col-span-2 mt-6">
+              <span className="mr-4">Border Countries:</span>
+              {country.borders?.map((item) => {
+                return (
+                  <span className="mr-4 inline-flex gap-3 font-normal bg-white py-1 px-6 shadow-3xl items-center rounded-md  dark:bg-darkBlue dark:text-white mb-3">
+                    {convertFullnameBorderCountries(item)}
+                  </span>
+                );
+              })}
             </div>
           </div>
         </div>

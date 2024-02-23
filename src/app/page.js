@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import { useData } from "./context/getData";
-
 import { IoMdSearch } from "react-icons/io";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import CountryList from "./countryList";
@@ -9,11 +8,8 @@ import CountryList from "./countryList";
 export default function Home() {
   const searchInputRef = useRef(null);
   const [countries, fetchCountries] = useData();
-  console.log("countries: ", countries);
   const [filteredCountries, setFilteredCountries] = useState(countries);
-  console.log("filteredCountries: ", filteredCountries);
   const [selectedRegion, setSelectedRegion] = useState("All");
-  console.log("selectedRegion: ", selectedRegion);
 
   const getRegionData = async (event) => {
     searchInputRef.current.value = "";
@@ -27,34 +23,19 @@ export default function Home() {
     }
   };
 
-  const getKeywordData = async (event) => {
-    const keyword = event.target.value;
-    console.log("keyword: ", keyword);
+  const getKeywordData = (event) => {
+    const keyword = event.target.value.toLowerCase();
 
-    // Eğer arama kutusu boşsa ve bir bölge seçiliyse, bu bölgeye göre filtreleme yap
-    if (keyword === "" && selectedRegion !== "All") {
-      const regionFiltered = countries.filter(
-        (item) => item.region === selectedRegion
-      );
-      setFilteredCountries(regionFiltered);
-      return;
-    }
+    const filterCountries = (country) => {
+      const isRegionMatch =
+        selectedRegion === "All" || country.region === selectedRegion;
+      const isKeywordMatch =
+        !keyword || country.name.common.toLowerCase().includes(keyword);
+      return isRegionMatch && isKeywordMatch;
+    };
 
-    // Eğer arama kutusu boşsa ve "All" seçiliyse, tüm ülkeleri göster
-    if (keyword === "") {
-      setFilteredCountries(countries);
-      return;
-    }
-
-    // Aksi takdirde, arama ve seçilen bölgeye göre filtreleme yap
-    const baseCountries =
-      selectedRegion === "All"
-        ? countries
-        : countries.filter((item) => item.region === selectedRegion);
-    const findIt = await baseCountries.filter((item) =>
-      item.name.common.toLowerCase().includes(keyword.toLowerCase())
-    );
-    setFilteredCountries(findIt);
+    const filtered = countries.filter(filterCountries);
+    setFilteredCountries(filtered);
   };
 
   useEffect(() => {
