@@ -6,7 +6,7 @@ import numeral from "numeral";
 export default function CountryList({ country }) {
   return (
     <div className="shadow-4xl dark:shadow-5xl rounded-lg dark:bg-darkBlue flex flex-col justify-between">
-      <Link href={`/${country.cca2}`}>
+      <Link href={`/${country.cca3}`}>
         <Image
           src={country.flags.svg}
           width={0}

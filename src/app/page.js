@@ -85,7 +85,7 @@ export default function Home() {
       </div>
       <div className="grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-10 items-stretch">
         {filteredCountries?.map((country) => (
-          <CountryList country={country} key={country.cca2} />
+          <CountryList country={country} key={country.cca3} />
         ))}
       </div>
     </>
