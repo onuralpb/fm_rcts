@@ -125,18 +125,15 @@ export default function CountryDetail({ params }) {
               </div>
               <div className="font-bold col-span-2 mt-6">
                 <span className="mr-4">Border Countries:</span>
-                {country.borders?.map((item, index) => {
-                  console.log("item: ", item);
-                  return (
-                    <Link
-                      href={`/${item}`}
-                      key={index}
-                      className="mr-4 inline-flex gap-3 font-normal bg-white py-1 px-6 shadow-3xl items-center rounded-md dark:bg-darkBlue dark:text-white mb-3 hover:bg-[#9bd921]  dark:hover:bg-[#9bd921] dark:hover:text-[#202c37]"
-                    >
-                      {convertFullnameBorderCountries(item)}
-                    </Link>
-                  );
-                })}
+                {country.borders?.map((item, index) => (
+                  <Link
+                    href={`/${item}`}
+                    key={index}
+                    className="mr-4 inline-flex gap-3 font-normal bg-white py-1 px-6 shadow-3xl items-center rounded-md dark:bg-darkBlue dark:text-white mb-3 hover:bg-[#9bd921]  dark:hover:bg-[#9bd921] dark:hover:text-[#202c37]"
+                  >
+                    {convertFullnameBorderCountries(item)}
+                  </Link>
+                ))}
               </div>
             </div>
           </div>
